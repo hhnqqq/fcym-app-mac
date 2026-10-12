@@ -1,0 +1,27 @@
+# 依赖与构建产物
+node_modules/
+windows-dist/
+*.zip
+
+# ⚠️ 账号敏感数据（登录 token 等）——绝不提交
+state.json
+captured.pac
+run.log
+run.err.log
+harness.pid
+seed.json
+leveldb-dump.json
+
+# ⚠️ 厂商扩展原文件（版权归风车云马所有，仅限本机自用）
+# 运行前请按 README「获取扩展文件」一节从本机 Edge 安装目录拷贝到 ext/
+ext/
+
+# 二进制与 App 产物
+app/FcymClient
+app/FcymClient.app/
+app/make-icon
+app/icon-1024.png
+app/AppIcon.icns
+app/icon.iconset/
+
+.DS_Store
