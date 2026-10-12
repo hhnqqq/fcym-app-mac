@@ -35,6 +35,24 @@ swiftc -O -o FcymClient FcymClient.swift
 cp -R FcymClient.app ~/Applications/
 ```
 
+## 获取扩展文件（首次运行必读）
+
+出于版权原因，仓库**不包含**风车云马扩展的原文件（`ext/` 目录，见 .gitignore）。
+本机 Edge 装过该扩展的，直接拷贝：
+
+```bash
+# macOS（zsh：把 * 换成扩展版本目录）
+EXT=~/Library/Application\ Support/Microsoft\ Edge/Default/Extensions/cmlfpongefnmhijkolpgfjlbpplahcfi/*/
+mkdir -p ext && cp -R "$EXT/js" "$EXT/manifest.json" "$EXT/_locales" ext/
+npm install && ./start.sh
+```
+
+```powershell
+# Windows（PowerShell）
+$ext = "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Extensions\cmlfpongefnmhijkolpgfjlbpplahcfi\*"
+Copy-Item -Recurse "$ext\js", "$ext\manifest.json", "$ext\_locales" .\ext\
+```
+
 ## 原理
 
 1. **复用扩展自己的 background.js**（`ext/js/background.js`），在 Node 中以浏览器 API shim 运行它，
