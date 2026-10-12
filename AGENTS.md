@@ -152,6 +152,15 @@ HTTP API：
   harness 已暴露 `GET /checkin`；`GET /exchange?code=XXX` 为兑换码。菜单栏/托盘有"签到"入口。
 - 免费节点（#8 美国/#18 新加坡 普速）质量很差（ECONNRESET/超时常见），非客户端问题。
 
+### ⚠️ 1.6 客户端崩溃教训（2026-10-12 修复）
+- **write EPIPE 崩溃**：客户端（浏览器等）在等 CONNECT 结果时断开，handleConnect 向死 socket 写 502
+  → 异步 EPIPE 无人监听 → uncaughtException → 进程退出。曾在 44 次启动中崩溃 29 次。
+  修复：handleConnect 开头 `client.on('error', ()=>{})` 兜底 + 所有写回走 safeWrite/safeEnd（先挂 error 监听）。
+- **宿主放弃重启**：Swift 壳原逻辑连续失败 >5 次就不再拉起 → 表现为"客户端经常自己停止"。
+  修复：指数退避（4s→60s 封顶）永不放弃；稳定运行 10 分钟后计数清零。
+- **407 与凭据时序**：上游 407 但会话无凭据（extConfig.usr/pd 未到）多发生在账号过期期间或 initEXT 未达时；
+  PAC 捕获后主动探测一次凭据（onPacCaptured 内 authProbed），/status 的 hasAuthCreds 反映真实可用性。
+
 ## 6. 已知限制
 
 - 两台设备同时跑（同 token）可能互踢；各自重新 extract 可用独立登录态
